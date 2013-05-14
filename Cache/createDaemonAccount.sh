@@ -21,7 +21,7 @@
 # Used ideas from:
 # http://www.debian.org/doc/manuals/securing-debian-howto/ch9.en.html
 # to create daemon accounts & groups
-instance=prod
+instance=$1
 SERVER_HOME=/opt/cachesys/$instance
 SERVER_USER=cacheusr$instance
 SERVER_NAME="Intersystems Cache $instance instance"
@@ -40,13 +40,14 @@ test -d $SERVER_HOME || mkdir -p $SERVER_HOME
 # create user if not existing
 if ! getent passwd | grep -q "^$SERVER_USER:"; then
     # TODO: echo this to log
-    #echo -n "Adding system user $SERVER_USER.."
+    echo -n "Adding system user $SERVER_USER.."
     adduser --system \
             --groups $SERVER_GROUP \
-            --no-create-home \
+            -M \
+            --shell /bin/false \
             $SERVER_USER 2>/dev/null || true
     # TODO: echo this to log
-    #echo "..done"
+    echo "..done"
 fi
 # adjust passwd entry
 usermod -c "$SERVER_NAME" \

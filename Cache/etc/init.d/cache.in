@@ -5,11 +5,10 @@
 # http://training.intersystems.com/tutorials/DocBook.UI.Page.cls?KEY=GHA_redhat_clusters
 # Edit the name of the Cache instance to be started into the shell
 # variable below.
-inst="prod"
-basdir=`/usr/bin/ccontrol list $inst | grep -i directory: | awk {'print $2'}`
+basdir=`/usr/bin/ccontrol list @inst@ | grep -i directory: | awk {'print $2'}`
 if [ "${basdir}" = "" ]
 then
-  echo "Instance $inst not found"
+  echo "Instance @inst@ not found"
   exit 1
 fi
 type=$1
@@ -25,11 +24,11 @@ case "$type" in
       exit 1
    else
         # If there is no cache.ids file, it's just a normal startup.
-      touch /var/lock/subsys/cacheprod
+      touch "/var/lock/subsys/cache@inst@"
       failflag=""
    fi
-   echo "Starting Ensemble instance $inst on $localnode"
-   ccontrol start $inst quietly
+   echo "Starting Ensemble instance @inst@ on $localnode"
+   ccontrol start @inst@ quietly
    status=$?
    case $status in
    (1)
@@ -43,29 +42,29 @@ case "$type" in
        ;;
   (stop)
         # Stop daemons.
-        echo "Stopping Ensemble instance $inst on $localnode"
-   ccontrol stop $inst quietly
-   rm -f /var/lock/subsys/cacheprod
+        echo "Stopping Ensemble instance @inst@ on $localnode"
+   ccontrol stop @inst@ quietly
+   rm -f "/var/lock/subsys/cache@inst@"
    status=$?
    case $status in
    (1)
-       echo "Ensemble instance $inst failed to stop"
+       echo "Ensemble instance @inst@ failed to stop"
        exit 1
        ;;
    (0)
-       echo "Ensemble instance $inst stopped"
+       echo "Ensemble instance @inst@ stopped"
        exit 0
    esac
    ;;
   (status)
    FIELDWIDTH=2
-   state=`/usr/bin/ccontrol all | grep -i $inst | awk {'print $1'}`
+   state=`/usr/bin/ccontrol all | grep -i @inst@ | awk {'print $1'}`
    if [ "$state" = "up" ]
    then
-      echo "$inst is UP"
+      echo "@inst@ is UP"
       exit 0   #cache is up
    fi
-      echo "$inst is DOWN or unable to determine status"
+      echo "@inst@ is DOWN or unable to determine status"
       exit 1   #cache is down or we can't tell
         ;;
   (*)
