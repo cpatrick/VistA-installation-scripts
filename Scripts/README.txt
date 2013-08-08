@@ -29,7 +29,7 @@ continue for any case (GTM or Cache):
       5) installBashConfiguration.sh
 
 Once all this environment is setup
-a Dashboar build can be triggered by calling:
+a Dashboard build can be triggered by calling:
 
          runDashboardBuildWithoutMUnit.sh
 
